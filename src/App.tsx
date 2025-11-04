@@ -7,6 +7,7 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/quest/:id" element={<QuestPage />} />
+        <Route path="*" element={<>Not Found</>} />
       </Routes>
     </BrowserRouter>
   );
