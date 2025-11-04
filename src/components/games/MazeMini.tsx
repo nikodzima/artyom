@@ -1,43 +1,100 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-export const MazeMini = ({ onComplete }: { onComplete: (s: boolean) => void }) => {
+interface MazeMiniProps {
+	onComplete: (s: boolean) => void;
+}
+
+export const MazeMini: React.FC<MazeMiniProps> = ({ onComplete }) => {
 	const [pos, setPos] = useState({ x: 50, y: 50 });
 	const goal = { x: 80, y: 80 };
+	const [permissionGranted, setPermissionGranted] = useState(false);
 
-	const move = (dx: number, dy: number) => {
-		setPos((p) => {
-			const np = { x: p.x + dx, y: p.y + dy };
-			if (Math.abs(np.x - goal.x) < 5 && Math.abs(np.y - goal.y) < 5) onComplete(true);
-			return np;
-		});
-	};
+	useEffect(() => {
+		// iOS 13+ требует запроса разрешения
+		const requestPermission = async () => {
+			if (
+				typeof DeviceOrientationEvent !== "undefined" &&
+				typeof (DeviceOrientationEvent as any).requestPermission === "function"
+			) {
+				try {
+					const res = await (DeviceOrientationEvent as any).requestPermission();
+					if (res === "granted") setPermissionGranted(true);
+				} catch (err) {
+					console.warn("DeviceOrientation permission denied:", err);
+				}
+			} else {
+				// не iOS или разрешение не требуется
+				setPermissionGranted(true);
+			}
+		};
+		requestPermission();
+	}, []);
+
+	useEffect(() => {
+		if (!permissionGranted) return;
+
+		const handleMotion = (event: DeviceOrientationEvent) => {
+			if (event.gamma === null || event.beta === null) return;
+
+			// регулировка скорости движения
+			const dx = event.gamma / 8; // влево/вправо
+			const dy = event.beta / 8;  // вперед/назад
+
+			setPos((p) => {
+				const np = {
+					x: Math.min(100, Math.max(0, p.x + dx)),
+					y: Math.min(100, Math.max(0, p.y + dy)),
+				};
+
+				// проверка на достижение цели
+				if (Math.abs(np.x - goal.x) < 5 && Math.abs(np.y - goal.y) < 5) {
+					onComplete(true);
+				}
+				return np;
+			});
+		};
+
+		window.addEventListener("deviceorientation", handleMotion, true);
+
+		return () => {
+			window.removeEventListener("deviceorientation", handleMotion);
+		};
+	}, [permissionGranted, onComplete]);
 
 	return (
-		<div className="relative w-full h-full bg-white/10">
+		<div className="relative w-full h-full bg-white/10 overflow-hidden rounded-md">
+			{/* цель */}
 			<div
 				className="absolute w-8 h-8 bg-green-400 rounded-full"
 				style={{ top: `${goal.y}%`, left: `${goal.x}%` }}
 			></div>
+
+			{/* шарик */}
 			<div
-				className="absolute w-10 h-10 bg-pink-500 rounded-full"
+				className="absolute w-10 h-10 bg-pink-500 rounded-full transition-all duration-50"
 				style={{ top: `${pos.y}%`, left: `${pos.x}%` }}
 			></div>
-			<div className="absolute bottom-4 left-0 right-0 flex justify-center gap-4">
-				{[
-					{ label: "⬆️", dx: 0, dy: -5 },
-					{ label: "⬇️", dx: 0, dy: 5 },
-					{ label: "⬅️", dx: -5, dy: 0 },
-					{ label: "➡️", dx: 5, dy: 0 },
-				].map((b) => (
+
+			{/* предупреждение для iOS */}
+			{!permissionGranted && (
+				<div className="absolute inset-0 flex flex-col justify-center items-center bg-black/50 text-white p-4 text-center">
+					<p>Разрешите доступ к датчикам движения, чтобы играть:</p>
 					<button
-						key={b.label}
-						onClick={() => move(b.dx, b.dy)}
-						className="bg-white/30 px-3 py-2 rounded-md text-xl active:scale-90"
+						className="mt-4 px-4 py-2 bg-white text-black rounded"
+						onClick={async () => {
+							if (
+								typeof DeviceOrientationEvent !== "undefined" &&
+								typeof (DeviceOrientationEvent as any).requestPermission === "function"
+							) {
+								const res = await (DeviceOrientationEvent as any).requestPermission();
+								if (res === "granted") setPermissionGranted(true);
+							}
+						}}
 					>
-						{b.label}
+						Разрешить
 					</button>
-				))}
-			</div>
+				</div>
+			)}
 		</div>
 	);
 };

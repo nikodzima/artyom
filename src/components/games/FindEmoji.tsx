@@ -10,7 +10,7 @@ interface Card {
 	isMatched: boolean;
 }
 
-export const MemoryGame = ({ onSuccess }: { onSuccess: () => void }) => {
+export const MemoryGame = ({ onComplete }: { onComplete: (s: boolean) => void }) => {
 	const [cards, setCards] = useState<Card[]>([]);
 	const [selected, setSelected] = useState<Card[]>([]);
 	const [isChecking, setIsChecking] = useState(false);
@@ -69,7 +69,7 @@ export const MemoryGame = ({ onSuccess }: { onSuccess: () => void }) => {
 	// проверка окончания игры
 	useEffect(() => {
 		if (cards.length > 0 && cards.every((c) => c.isMatched)) {
-			setTimeout(() => onSuccess(), 500);
+			setTimeout(() => onComplete(true), 500);
 		}
 	}, [cards]);
 
