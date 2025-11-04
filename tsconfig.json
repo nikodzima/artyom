@@ -1,0 +1,79 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": "./src",
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "inlineSources": true,
+    "isolatedModules": true,
+    "jsx": "react",
+    "lib": [
+      "es6",
+      "dom"
+    ],
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "noEmit": true,
+    "sourceMap": true,
+    "sourceRoot": "./src",
+    "strict": true,
+    "target": "esnext",
+    "resolveJsonModule": true,
+    "typeRoots": [
+      "./declarations",
+      "./node_modules/@types/"
+    ],
+    "skipLibCheck": true,
+    "paths": {
+      "@app/*": [
+        "app/*"
+      ],
+      "@assets/*": [
+        "assets/*"
+      ],
+      "@common/*": [
+        "components/common/*"
+      ],
+      "@components/*": [
+        "components/*"
+      ],
+      "@constants/*": [
+        "constants/*"
+      ],
+      "@hooks/*": [
+        "hooks/*"
+      ],
+      "@lib/*": [
+        "lib/*"
+      ],
+      "@routes/*": [
+        "routes/*"
+      ],
+      "@context/*": [
+        "context/*"
+      ],
+      "@store/*": [
+        "store/*"
+      ],
+      "@styles/*": [
+        "styles/*"
+      ],
+      "@utils/*": [
+        "utils/*"
+      ]
+    }
+  },
+  "include": [
+    "src/**/*",
+    ".eslintrc.cjs",
+    "declarations",
+    "./babel.config.js",
+    "./jest.config.js",
+    "./webpack.config.js"
+  ],
+  "exclude": [
+    "node_modules",
+    "build"
+  ]
+}
