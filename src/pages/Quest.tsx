@@ -13,6 +13,9 @@ import { MazeMini } from '../components/games/MazeMini';
 import { TapRush } from '../components/games/TapRush';
 import { GameType, questSteps } from '../data/questSteps';
 import { CatchGame } from '../components/games/FallingItem';
+import { CatchFallingObjects } from '../components/games/CatchFallingObjects';
+import { SimonSays } from '../components/games/SimonSays';
+import { MathQuiz } from '../components/games/MathQuiz';
 
 
 const gameComponents: Record<GameType, React.ComponentType<any>> = {
@@ -22,6 +25,9 @@ const gameComponents: Record<GameType, React.ComponentType<any>> = {
   codePuzzle: CodePuzzle,
   mazeMini: MazeMini,
   catchGame: CatchGame,
+  catchFallingObjects: CatchFallingObjects,
+  simonSays: SimonSays,
+  mathQuiz: MathQuiz
 };
 
 export default function QuestPage() {

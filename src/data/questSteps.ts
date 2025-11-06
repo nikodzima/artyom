@@ -1,4 +1,4 @@
-export type GameType = "tapRush" | "catchButton" | "findEmoji" | "codePuzzle" | "mazeMini" | 'catchGame';
+export type GameType = "tapRush" | "catchButton" | "findEmoji" | "codePuzzle" | "mazeMini" | 'catchGame' | 'catchFallingObjects' | 'mathQuiz' | 'simonSays';
 
 export interface QuestStep {
 	id: number;
@@ -64,5 +64,32 @@ export const questSteps: QuestStep[] = [
 			name: 'ХУЙНЯ ПАДАЕТ'
 		},
 		riddle: "Следующая подсказка находится там, где хранится результат вашего хобби с Федулычем",
+	},
+	{
+		id: 7,
+		game: {
+			type: "simonSays",
+			rule: 'Запоминай и повторяй',
+			name: 'ЭПИЛЕПСИЯ'
+		},
+		riddle: "Следующая подсказка там, где Настя чахнет над цацками",
+	},
+	{
+		id: 8,
+		game: {
+			type: "catchFallingObjects",
+			rule: 'Типо как ловить яйца только пиздец багованная хуйня',
+			name: 'ХУИТА'
+		},
+		riddle: "Ладно, были слишком сложные задания, поэтому следующая подсказка спрятана легко, просто вспомни, что шкода душнила",
+	},
+	{
+		id: 9,
+		game: {
+			type: "mathQuiz",
+			rule: 'Считай',
+			name: 'Задачка от Димасика'
+		},
+		riddle: "Ну и напоследок пришло время вспомнить самый уебанский подарок Димасика",
 	},
 ];

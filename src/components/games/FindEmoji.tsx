@@ -15,9 +15,10 @@ export const MemoryGame = ({ onComplete }: { onComplete: (s: boolean) => void })
 	const [selected, setSelected] = useState<Card[]>([]);
 	const [isChecking, setIsChecking] = useState(false);
 
-	// создаём колоду из пар
 	useEffect(() => {
-		const pairs = [...emojis, ...emojis].slice(0, 16); // максимум 16 карточек
+		// Берём 4 случайных эмодзи и дублируем
+		const chosen = emojis.sort(() => Math.random() - 0.5).slice(0, 4);
+		const pairs = [...chosen, ...chosen];
 		const shuffled = pairs
 			.map((emoji, i) => ({ id: i, emoji, isOpen: false, isMatched: false }))
 			.sort(() => Math.random() - 0.5);
@@ -27,21 +28,18 @@ export const MemoryGame = ({ onComplete }: { onComplete: (s: boolean) => void })
 	const handleClick = (card: Card) => {
 		if (card.isOpen || card.isMatched || isChecking) return;
 
-		const newCards = cards.map((c) =>
-			c.id === card.id ? { ...c, isOpen: true } : c
+		setCards((prev) =>
+			prev.map((c) => (c.id === card.id ? { ...c, isOpen: true } : c))
 		);
-		setCards(newCards);
 		setSelected((prev) => [...prev, { ...card, isOpen: true }]);
 	};
 
-	// проверка выбранных карточек
 	useEffect(() => {
 		if (selected.length === 2) {
 			setIsChecking(true);
 			const [first, second] = selected;
 
 			if (first.emoji === second.emoji) {
-				// совпадение
 				setCards((prev) =>
 					prev.map((c) =>
 						c.emoji === first.emoji ? { ...c, isMatched: true } : c
@@ -52,21 +50,21 @@ export const MemoryGame = ({ onComplete }: { onComplete: (s: boolean) => void })
 					setIsChecking(false);
 				}, 300);
 			} else {
-				// несовпадение — закрываем через 800ms
 				setTimeout(() => {
 					setCards((prev) =>
 						prev.map((c) =>
-							c.id === first.id || c.id === second.id ? { ...c, isOpen: false } : c
+							c.id === first.id || c.id === second.id
+								? { ...c, isOpen: false }
+								: c
 						)
 					);
 					setSelected([]);
 					setIsChecking(false);
-				}, 800);
+				}, 700);
 			}
 		}
 	}, [selected]);
 
-	// проверка окончания игры
 	useEffect(() => {
 		if (cards.length > 0 && cards.every((c) => c.isMatched)) {
 			setTimeout(() => onComplete(true), 500);
@@ -74,12 +72,12 @@ export const MemoryGame = ({ onComplete }: { onComplete: (s: boolean) => void })
 	}, [cards]);
 
 	return (
-		<div className="grid grid-cols-4 gap-2 w-full max-w-md mx-auto">
+		<div className="grid grid-cols-4 gap-3 w-full max-w-xs mx-auto">
 			{cards.map((card) => (
 				<motion.button
 					key={card.id}
 					onClick={() => handleClick(card)}
-					className="w-full aspect-square rounded-lg bg-white/20 flex items-center justify-center text-3xl text-white shadow-lg"
+					className="w-full aspect-square rounded-xl bg-white/20 flex items-center justify-center text-3xl text-white shadow-md"
 					whileTap={{ scale: 0.9 }}
 				>
 					<AnimatePresence>
